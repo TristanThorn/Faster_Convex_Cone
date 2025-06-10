@@ -26,11 +26,11 @@ addpath(genpath('path/to/cc_unmixing'));
 * `Substance_spectra/`
 
   * `.mat` files for Hb, HbO₂, CuSO₄, NiSO₄, etc.
-* `acquisition/` – raw data I/O
-* `reconstruction/` – PA/US Fourier-domain recon (`rekon_oa_freqdom.m`, `rekon_us_freqdom1.m`)
-* `phantoms/` – digital phantom generators
-* `analysis/` – spectrum extraction & comparison
-* `compensation/` – linear unmixing demo (`example_linear_unmixing.m`) and convex-cone unmixing
+* `Acquisition/` – raw data I/O
+* `Reconstruction/` – PA/US Fourier-domain recon (`rekon_oa_freqdom.m`, `rekon_us_freqdom1.m`)
+* `Phantoms/` – digital phantom generators
+* `Analysis/` – spectrum extraction & comparison
+* `Compensation/` – linear unmixing demo (`example_linear_unmixing.m`) and convex-cone unmixing
 
 ---
 
@@ -87,9 +87,9 @@ sO2_lin = compensation/example_linear_unmixing(\u03bb, y_obs, [\u03b5_HbO2, \u03
 
 A cone of realistic fluence‐distorted spectra enforces physically plausible mixtures under heterogeneous illumination, mitigating depth- and background-dependent bias.
 
-### 5.2 Phantom Generation (Updated)
+### 5.2 Phantom Generation
 
-**New requirements:**
+**Requirements:**
 
 1. **Geometry**
 
