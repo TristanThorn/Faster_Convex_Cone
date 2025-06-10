@@ -72,7 +72,7 @@ reconstruction/reconstruct_laser_sweep('rawSweepFolder','calibratedPA.mat');
 sO2_lin = compensation/example_linear_unmixing(\u03bb, y_obs, [\u03b5_HbO2, \u03b5_Hb]);
 ```
 
-**Observed failure modes** (predecessor’s Slack logs):
+**Observed failure modes**:
 
 * **Uniform intralipid + CuSO₄/NiSO₄ phantom** → SO₂ MAE ≓ 17%
 * **Tube diameter 0.3 mm** too small → negligible spectral coloring → biased fit
