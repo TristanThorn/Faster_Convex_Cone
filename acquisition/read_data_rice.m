@@ -14,7 +14,7 @@ rfm = fliplr (rfm);
 rekon = reconstruct_pa(rfm);
 caxis([0 1e+03]);
 
-% rekon_US_freqdom1(rfm, 20 , 0.315, 1.48 , 0,1,1,5,1,0);
+% rekon_us_freqdom1(rfm, 20 , 0.315, 1.48 , 0,1,1,5,1,0);
 %% 
 
 imshow(rekon, [])

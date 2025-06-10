@@ -85,31 +85,31 @@ end
 
 %% 5. Define Optimization Problem with Regularization
 
-%% 优化补偿向量以拟合目标归一化谱形
+%% Optimize compensation vector to match normalized spectra
 normalize = @(x) x / norm(x);  % L2 norm
 % normalize = @(x) (x - min(x)) / norm(x - min(x));
 
 
-% 目标函数：拟合谱形 + 平滑惩罚项
+% Objective: fit spectrum shape with smoothness regularization
 objective = @(comp) ...
     norm(normalize(snr_Ni ./ comp) - normalize(true_spectrum_Ni))^2 + ...
     norm(normalize(snr_Cu ./ comp) - normalize(true_spectrum_Cu))^2 + ...
     0.001 * norm(diff(comp))^2;
 
-% 初始补偿向量
+% Initial compensation vector
 init_comp = ones(size(snr_Ni));
 
-% 上下界（防止除以0或过大）
+% Bounds to avoid zero-division or extreme values
 lb = 0.1 * ones(size(snr_Ni));
 ub = 10  * ones(size(snr_Ni));
 
-% 优化设置
+% Optimization settings
 options = optimoptions('fmincon', ...
     'Display', 'iter', ...
     'MaxFunctionEvaluations', 5000, ...
     'MaxIterations', 1000);
 
-% 执行优化
+% Run optimization
 opt_compensation = fmincon(objective, init_comp, [], [], [], [], lb, ub, [], options);
 
 %% 6. Apply Compensation

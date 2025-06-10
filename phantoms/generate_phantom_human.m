@@ -1,3 +1,4 @@
+% Generate a human-like layered phantom with elliptical vessels.
 clear all;
 close all;
 
