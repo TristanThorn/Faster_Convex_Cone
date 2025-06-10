@@ -1,22 +1,24 @@
+% Generate a deeper layered phantom with multiple vessels.
 clear all;
 close all;
 
-pixel_size = 0.2;
+pixel_size = 0.05;
 fac=0.1/pixel_size;% pixel size = 0.1/fac mm
 % Initialize the size of the 3D matrix
-nx = 150 * fac; % Size in the x-direction %180
-ny = 200 * fac; % Size in the y-direction
-nz = 130 * fac; % Size in the z-direction (axial direction) % 200
+nx = 120 * fac; % Size in the x-direction %180
+ny = 300 * fac; % Size in the y-direction
+nz = 250 * fac; % Size in the z-direction (axial direction) % 200
 phantom = ones(nx, ny, nz); % Initialize the matrix with zeros
+
 
 % ------------------------
 % 1. Layered structure (Tissue layers)
 % ------------------------
-
+rng(1);
 % Specify the thickness of the first two layers
-layer1_thickness = 40 * fac; 
-layer2_thickness = 20 * fac; 
-layer3_thickness = 40 * fac; 
+layer1_thickness = round((5+5*rand) * fac); 
+layer2_thickness = round((20+20*rand) * fac); 
+layer3_thickness = round((35+15*rand) * fac); 
 
 % Automatically calculate the thickness of the third layer
 layer4_thickness = nz - layer1_thickness - layer2_thickness - layer3_thickness;
@@ -35,13 +37,18 @@ phantom(:, :, layer1_thickness+layer2_thickness+layer3_thickness+1:end) = 4; % T
 % ------------------------
 % 2. Cylinders (Blood vessels)
 % ------------------------
-
+% 1
 cylinders = {
     % Center_y, Center_z, Radius, Value
-    [round(65*fac), round(37*fac), round(3*fac), 5];
-    [round(135*fac), round(37*fac), round(3*fac), 6]; 
-    [round(95*fac), round(70*fac), round(3*fac), 7];
-    [round(125*fac), round(70*fac), round(3*fac), 8];};
+    [round(70*fac), round(31*fac), round(11*fac), 5];
+    [round(190*fac), round(53*fac), round(13*fac), 6];   
+    [round(240*fac), round(78*fac), round(18*fac), 7];
+    [round(80*fac), round(98*fac), round(18*fac), 8];
+    [round(200*fac), round(116*fac), round(16*fac), 8];
+    [round(150*fac), round(140*fac), round(20*fac), 9];
+    [round(50*fac), round(165*fac), round(15*fac), 10];
+    [round(240*fac), round(214*fac), round(14*fac), 11];};
+
 
 
 % Iterate through each cylinder and embed it into the phantom matrix
@@ -76,11 +83,30 @@ vol = uint8(vol);
 phantom = uint8(phantom);
 figure;imshow(squeeze(max(vol,[],1)),[]);
 figure;imshow(squeeze(max(phantom,[],1)),[]);
-volumeViewer(vol);
+% A = rand(4, 4, 4);
+% sO2_map = imresize3(A,[nx,ny,nz],'cubic');
+% sO2_map = (sO2_map-min(sO2_map(:)))/(max(sO2_map(:))-min(sO2_map(:)))*11;
+% sO2_map(phantom==5) = phantom(phantom==5);
+% sO2_map(phantom==6) = phantom(phantom==6);
+% sO2_map(phantom==7) = phantom(phantom==7);
+% sO2_map(phantom==8) = phantom(phantom==8);
+% sO2_map(phantom==9) = phantom(phantom==9);
+% sO2_map(phantom==10) = phantom(phantom==10);
+% sO2_map(phantom==11) = phantom(phantom==11);
+% imshow(squeeze(max(sO2_map,[],1)),[]);
+% volumeViewer(vol);
 
 % ------------------------
 % 4. Save to a .mat file
 % ------------------------
 
 % Save the resized phantom matrix to a .mat file
-% niftiwrite(vol, 'digital_phantom_large_tube.nii')
+niftiwrite(vol, 'digital_VesselDiff_deep_mimicCC_0.2_flip2.nii')
+% save('digital_vessel_new_mimicCC_0.2.mat', 'phantom');
+
+% close all;
+% clear all;
+% load('digital_vessel_mimicCC_0.1.mat');
+% vol = uint8(vol);
+% volumeViewer(vol);
+% niftiwrite(vol, 'digital_vessel_mimicCC_0.1.nii')

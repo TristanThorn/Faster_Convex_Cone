@@ -25,6 +25,6 @@ function img = reconstruct_pa(rf_data, params)
     if ~isfield(params, 'coeffT'),    params.coeffT = 5;   end
     if ~isfield(params, 'samplingX'), params.samplingX = 8; end
 
-    [img, ~] = rekon_OA_freqdom(rf_data, params.F, params.pitch, params.c, ...
+    [img, ~] = rekon_oa_freqdom(rf_data, params.F, params.pitch, params.c, ...
         params.delay, params.zeroX, params.zeroT, params.coeffT, params.samplingX);
 end
