@@ -1,4 +1,6 @@
-% clear all 
+% Monte Carlo simulation of photon scattering in a uniform medium.
+% Uncomment the following lines to control randomness.
+% clear all
 % format compact
 % % Set random seed for reproducibility
 % s = RandStream('mt19937ar','Seed','shuffle');

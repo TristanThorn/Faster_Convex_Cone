@@ -1,3 +1,4 @@
+% Generate a simple layered phantom with circular vessels.
 clear;
 close all;
 

@@ -47,7 +47,7 @@ for idx = 2:length(wavelengths)
         rfm = fliplr(rfm);
     
         % Reconstruct PA image
-        [img, ~] = rekon_OA_freqdom(rfm, 40, 0.315, 1.48, 0, 1, 1, 5, 8);
+        [img, ~] = rekon_oa_freqdom(rfm, 40, 0.315, 1.48, 0, 1, 1, 5, 8);
         caxis([0, 1e3]);
     
         % Display and save image
