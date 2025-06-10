@@ -39,7 +39,6 @@ end
 
 %% Phantom
 % Load spectra
-% Load spectra
 load('Substance_spectra\spectrumNiSO4_extin.mat');
 load('Substance_spectra\spectrumCuSO4_extin.mat');
 
