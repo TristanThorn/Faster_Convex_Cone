@@ -55,14 +55,6 @@ Spectral unmixing and plotting utilities are provided in:
 
 These scripts load spectra from the `Substance_spectra` directory and generate figures of the processed spectra.
 
-## Future Work
-
-- Conduct additional phantom experiments using CuSO4 and NiSO4 to mimic HbO2 and Hb, respectively. Mix these chromophores with intralipid to better emulate tissue scattering and absorption and to obtain statistically significant results.
-- Reduce the simulation time for the diffusion approximation routines.
-- Validate the customized convex cone method with in-vivo experiments.
-- Automatically generate PA phantoms based on registered PA and US data.
-
-
 ## Citation
 
 The reconstruction functions are based on the Fourier domain method described by Jaeger *et&nbsp;al.* in
