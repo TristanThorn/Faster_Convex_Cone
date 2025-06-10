@@ -6,18 +6,8 @@ folder_path = '0520/';
 file_name = 'deep_80delay_OBP_Laser_PA_1356.raw'; % <-- Update to your file name
 full_path = fullfile(folder_path, file_name);
 
-fid = fopen(full_path, 'rb');
-if fid == -1
-    error('Cannot open file: %s', full_path);
-end
-
-data = fread(fid, 'int16');
-fclose(fid);
-
-% Assume 1024 samples and 128 channels per frame
-frame_size = 1024 * 128;
-total_frames = floor(numel(data) / frame_size);
-body = reshape(data(1:frame_size*total_frames), [1024, 128, total_frames]);
+body = load_raw_frame(full_path);
+total_frames = size(body,3);
 
 % Sweep wavelengths from 700 to 900 nm (step = 20), 11 steps
 wavelengths = 700:20:900;
@@ -43,7 +33,7 @@ for idx = 1:length(wavelengths)
     rfm = fliplr(rfm);
 
     % Reconstruct PA image
-    [img, ~] = rekon_OA_freqdom(rfm, 40, 0.315, 1.48, 0, 1, 1, 5, 8);
+    img = reconstruct_pa(rfm);
     caxis([0, 1e3]);
 
     % Display and save image
