@@ -1,6 +1,6 @@
 %Fast Fourier Reconstruction using inverse k-space interpolation
 
-% ACUTAL VERSION FOR ANGLED TRANSMISSION ECHO ULTRASOUND RECONSTRUCTION
+% ACTUAL VERSION FOR ANGLED TRANSMISSION ECHO ULTRASOUND RECONSTRUCTION
 % 22/11/2012
 % following new method, where signal data is shifted in time, and kt2 is
 % differently calculated than in common echo ultrasound reconstruction.
