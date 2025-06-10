@@ -1,3 +1,4 @@
+% Generate a series of deep phantoms with varying vessel configurations.
 clear all;
 close all;
 

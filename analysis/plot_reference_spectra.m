@@ -1,3 +1,4 @@
+% Plot reference absorption spectra for blood and phantom materials.
 load('Substance_spectra/spectrum_HbO2_Cope.mat');
 load('Substance_spectra/spectrum_Hb_Cope.mat');
 

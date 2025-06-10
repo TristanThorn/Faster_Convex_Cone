@@ -34,9 +34,9 @@
 %        corresponding to the real aperture 
 % ------------------------------------------------------------------------
 % typical usage (for Kontron transducer): 
-% rekon = rekon_OA_freqdom(signal,40,0.3,0,0,0,5,3);  
+% rekon = rekon_oa_freqdom(signal,40,0.3,0,0,0,5,3);
 
-function [rekon,rekonuncut] = rekon_OA_freqdom(sig,F,pitch,c,delay,zeroX,zeroT,coeffT,samplingX) 
+function [rekon,rekonuncut] = rekon_oa_freqdom(sig,F,pitch,c,delay,zeroX,zeroT,coeffT,samplingX)
 
  
 

@@ -50,9 +50,8 @@
 % corresponding to the real aperture
 % ------------------------------------------------------------------------
 % typical usage (for Kontron transducer):
-% rekon = rekon_US_freqdom(rf_signal,50,0.245,1.54,1.33,0,5,1,0);
-function rekon =...
-rekon_US_freqdom1(sig,F,pitch,c,delay,zeroX,zeroT,coeffT,samplingX,alpha)
+% rekon = rekon_us_freqdom1(rf_signal,50,0.245,1.54,1.33,0,5,1,0);
+function rekon = rekon_us_freqdom1(sig,F,pitch,c,delay,zeroX,zeroT,coeffT,samplingX,alpha)
 
 sig = sig'; % signal data is transposed in order to fit to the algorithm
             % which was initially implemented for element index
