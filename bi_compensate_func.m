@@ -94,8 +94,9 @@ end
 end
 
 function val = localAverage(img, pt, off)
-rows = pt(2)-off(1):pt(2)+off(1);
-cols = pt(1)-off(2):pt(1)+off(2);
+%LOCALAVERAGE Mean of a rectangular region with boundary clipping.
+rows = max(pt(2)-off(1),1):min(pt(2)+off(1), size(img,1));
+cols = max(pt(1)-off(2),1):min(pt(1)+off(2), size(img,2));
 region = img(rows, cols);
 val = mean(region(:));
 end
