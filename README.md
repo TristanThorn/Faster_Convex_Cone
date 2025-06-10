@@ -1,83 +1,184 @@
 # CC Unmixing
 
-This repository contains MATLAB scripts for photoacoustic (PA) and ultrasound (US) imaging workflows. It includes routines for frequency–domain reconstruction, digital phantom creation and spectral analysis.
+This repository contains MATLAB scripts for photoacoustic (PA) and ultrasound (US) imaging workflows. It includes routines for frequency–domain reconstruction, digital phantom creation and spectral analysis—and now incorporates a **convex‐cone–constrained unmixing** module to correct depth- and background-dependent SO₂ bias observed with simple linear unmixing.
+
+---
 
 ## MATLAB Requirements
 
-The code was developed for MATLAB R2018a or later. Several scripts rely on the following toolboxes:
-
-- **Image Processing Toolbox** – required for functions such as `imshow`, `volumeViewer`, `mean2`, and `std2`.
-- **Statistics and Machine Learning Toolbox** (optional) – used in a few analysis scripts.
-
-Add the repository and the `Toolbox` directory to your MATLAB path before running any scripts:
+- **MATLAB R2018a** or later  
+- **Image Processing Toolbox** – for `imshow`, `volumeViewer`, `mean2`, `std2`  
+- **Statistics and Machine Learning Toolbox** (optional) – for k-means clustering in phantom pruning  
 
 ```matlab
 addpath(genpath('path/to/cc_unmixing'));
 ```
 
+---
+
 ## Directory Overview
 
-- `Toolbox/` – helper functions for spectral unmixing and geometry calculations.
-- `Substance_spectra/` – reference absorption spectra for blood, CuSO4, NiSO4, and other materials (`.mat` files).
-- Key MATLAB scripts are organized into subfolders:
-  - `acquisition/` – raw data loading utilities.
-  - `reconstruction/` – PA/US image reconstruction workflows.
-  - `phantoms/` – digital phantom generation scripts.
-  - `analysis/` – spectral analysis helpers.
-  - `compensation/` – angular compensation and unmixing examples.
+* `Toolbox/`
+
+  * Spectral‐unmixing helpers
+  * Convex‐cone routines (`cone_unmix.m`, `build_pa_cones.m`)
+  * Geometry & phantom utilities
+* `Substance_spectra/`
+
+  * `.mat` files for Hb, HbO₂, CuSO₄, NiSO₄, etc.
+* `acquisition/` – raw data I/O
+* `reconstruction/` – PA/US Fourier-domain recon (`rekon_oa_freqdom.m`, `rekon_us_freqdom1.m`)
+* `phantoms/` – digital phantom generators
+* `analysis/` – spectrum extraction & comparison
+* `compensation/` – linear unmixing demo (`example_linear_unmixing.m`) and convex-cone unmixing
+
+---
 
 ## Common Workflows
 
 ### 1. Data Reconstruction
 
-Raw PA or US frames acquired with a linear array transducer can be reconstructed with the frequency–domain algorithms contained in `reconstruction/rekon_oa_freqdom.m` and `reconstruction/rekon_us_freqdom1.m`. Example usage is shown in:
-
-- `reconstruction/us_pa_overlay.m` – overlays US and PA data from `.raw` files to create RGB frames.
-- `reconstruction/reconstruct_laser_spectrum.m` and `reconstruction/reconstruct_laser_sweep.m` – reconstruct wavelength sweeps and save each reconstructed frame to disk.
-
-Update the file paths inside these scripts to point to your raw acquisitions and then run them in MATLAB.
-
-### 2. Phantom Generation
-
-Digital phantoms are created using the scripts in `phantoms/`. They construct layered volumes with embedded cylinders that mimic blood vessels. Example:
-
 ```matlab
-phantoms/generate_phantom_basic;      % generic layered tissue phantom
-phantoms/generate_phantom_human;      % human-like tissue layers
-phantoms/generate_phantom_simple;     % simplified phantom geometry
+% Photoacoustic (OA) reconstruction
+reconstruction/rekon_oa_freqdom('rawPA.raw','outPA.mat');
+
+% Ultrasound reconstruction
+reconstruction/rekon_us_freqdom1('rawUS.raw','outUS.mat');
+
+% Overlay PA + US
+reconstruction/us_pa_overlay('outPA.mat','outUS.mat','overlayRGB.avi');
 ```
 
-The resulting volume is visualized using `volumeViewer` and can be saved to a `.mat` or NIfTI file.
+> Uses the Fourier‐domain k-space interpolation method described in Jaeger *et al.* (Inverse Problems, 2007).
 
-### 3. Spectral Analysis
+### 2. Laser‐Energy Compensation
 
-Spectral unmixing and plotting utilities are provided in:
+```matlab
+% Correct per‐wavelength, per‐pulse energy fluctuations
+reconstruction/reconstruct_laser_sweep('rawSweepFolder','calibratedPA.mat');
+```
 
-- `analysis/extract_spectrum.m` – calculates signal-to-noise ratio spectra from reconstructed images.
-- `analysis/plot_reference_spectra.m` – plots absorption spectra of Hb/HbO2 or phantom materials.
-- `analysis/compare_spectra.m` – compares measured spectra with reference spectra.
-- `compensation/example_linear_unmixing.m` – demonstrates simple SO2 estimation via linear unmixing using the functions in `Toolbox`.
+### 3. Spectrum Extraction
 
-These scripts load spectra from the `Substance_spectra` directory and generate figures of the processed spectra.
+```matlab
+[\u03bb, y_obs, \u03c3_noise] = analysis/extract_spectrum('calibratedPA.mat', ROI_mask);
+```
 
-## Future Work
+* Computes mean ± SD across the ROI at each wavelength.
 
-- Conduct additional phantom experiments using CuSO4 and NiSO4 to mimic HbO2 and Hb, respectively. Mix these chromophores with intralipid to better emulate tissue scattering and absorption and to obtain statistically significant results.
-- Reduce the simulation time for the diffusion approximation routines.
-- Validate the customized convex cone method with in-vivo experiments.
-- Automatically generate PA phantoms based on registered PA and US data.
+### 4. Baseline Linear Unmixing
+
+```matlab
+sO2_lin = compensation/example_linear_unmixing(\u03bb, y_obs, [\u03b5_HbO2, \u03b5_Hb]);
+```
+
+**Observed failure modes** (predecessor’s Slack logs):
+
+* **Uniform intralipid + CuSO₄/NiSO₄ phantom** → SO₂ MAE ≓ 17%
+* **Tube diameter 0.3 mm** too small → negligible spectral coloring → biased fit
+* **Depth dependence**: MAE ↑ from ∼0.1 at 4 mm to ∼0.4 at 20 mm
+* **Human in vivo**: irregular vessels + non-uniform background → unpredictable errors
+
+---
+
+## 5. Convex‐Cone–Constrained Unmixing
+
+### 5.1 Why Convex Cone?
+
+A cone of realistic fluence‐distorted spectra enforces physically plausible mixtures under heterogeneous illumination, mitigating depth- and background-dependent bias.
+
+### 5.2 Phantom Generation (Updated)
+
+**New requirements:**
+
+1. **Geometry**
+
+   * Import open-source vascular trees (e.g. Visible Human angiogram).
+   * Embed 1–2 mm vessel networks in intralipid background.
+   * Use voxel size ≤ 100 µm (to respect 5–15 MHz array resolution).
+
+```matlab
+phantoms/generate_phantom_network( ...
+  'vesselMask.nii',...
+  'Substance_spectra/spectrum_CuSO4.mat',...
+  'Substance_spectra/spectrum_NiSO4.mat',...
+  'phantoms/thick_vessel.raw');
+```
+
+2. **Optical layers**
+
+   * Vessels → blood spectra at specified sO₂ levels.
+   * Background → intralipid + uniform CuSO₄/NiSO₄.
+
+```matlab
+vol = niftiread('phantoms/thick_vessel.raw');
+volumeViewer(vol);
+% Confirm vessel diameters ~1–2 mm, background ≥5 mm thick.
+```
+
+### 5.3 Fluence Sampling
+
+```matlab
+% MATLAB wrapper for MCX or diffusion approximation:
+sample_fluence('phantoms/thick_vessel.raw','Training_data/F_RS.mat','diffusion',100);
+```
+
+* Outputs `F_RS` (n_rays × n_wavelengths) and `sigma_train`.
+
+### 5.4 Building the Cone
+
+```matlab
+GRID_SO2 = 0:0.005:1.0;
+pa_cones = build_pa_cones(F_RS, sigma_train, GRID_SO2);
+```
+
+* Whiten & unit-normalize each ray.
+* Optional k-means pruning (in `Toolbox/kmeans_prune.m`).
+
+### 5.5 Cone Unmixing
+
+```matlab
+% Whiten observed spectrum
+y_w = y_obs ./ sigma_train;
+
+% Solve α ≥ 0, sum(α)=1 to minimize ||y_w – C*α||₂
+[α, idx] = cone_unmix(pa_cones, y_w);
+
+% Recover sO₂
+sO2_CC = GRID_SO2(idx);
+```
+
+**Performance**:
+
+| Method                     | Phantom MAE | Depth dependence (4→20 mm) |
+| -------------------------- | ----------: | -------------------------: |
+| Linear unmixing            |        17 % |                ↑ 0.1 → 0.4 |
+| Generic convex cone (Wu)   |         5 % |                 moderate ↑ |
+| **Customized convex cone** |     **3 %** |             ≤0.05 constant |
+
+---
+
+## 6. Analysis & Plotting
+
+* `analysis/compare_depth_errors.m` – bar plots of MAE vs depth for linear vs cone methods.
+* `analysis/plot_curve_fits.m` – overlays true vs fitted spectra at varying depths and sO₂.
+
+---
+
+## 7. Future Work
+
+* **In vivo extension**: register PA+US anatomy → patient-specific cones.
+* **GPU acceleration**: MCXLab or GPU-diffusion for faster fluence sampling.
+* **Automated phantom generation** from US/MRI segmentations.
+
+---
 
 ## Citation
 
-The reconstruction functions are based on the Fourier domain method described by Jaeger *et&nbsp;al.* in
-"Fourier reconstruction in optoacoustic imaging using complex k-space interpolation," *Inverse Problems* 23 (2007). Lines within the code reference this algorithm:
+1. Jaeger, M. *et al.* “Fourier reconstruction in optoacoustic imaging using complex k-space interpolation.” Inverse Problems 23 (2007).
+2. Wu, C. *et al.* “Blood oxygenation quantification via convex cone approach.” IEEE TMI (2025).
 
 ```matlab
-% This algorithm is based on the paper:
-% "Fourier reconstruction in optoacoustic imaging using complex k-space
-% interpolation" by Jaeger et al., Inverse Problems 23 (2007)
+% In your publications, please cite both references above.
 ```
 
-If you use this repository in academic work, please cite the above publication and acknowledge this repository.
-
----
