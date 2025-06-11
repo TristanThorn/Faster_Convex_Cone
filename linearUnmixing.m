@@ -1,0 +1,32 @@
+function SO2 = linearUnmixing(PA, spectra_HbO2, spectra_Hb)
+
+    C = [spectra_HbO2', spectra_Hb']\PA';
+
+%     PA = double(PA);
+%     spectra_HbO2 = double(spectra_HbO2);
+%     spectra_Hb = double(spectra_Hb);
+%     
+%     C = lsqnonneg([spectra_HbO2', spectra_Hb'], PA');
+    
+    if(C(1) < 0)
+        SO2 = 0;
+    elseif(C(2) < 0)
+        SO2 = 1;
+    else
+        SO2 = C(1)/sum(C);
+    end
+    
+    wavelengths = linspace(700, 900, 21); 
+    fitted_spectrum = C(1) * spectra_HbO2 + C(2) * spectra_Hb;
+
+%     figure; 
+%     plot(wavelengths, PA, 'bo-', 'LineWidth', 1.5, 'DisplayName', 'Actual Spectrum');
+%     hold on;
+%     plot(wavelengths, fitted_spectrum, 'r*-', 'LineWidth', 1.5, 'DisplayName', 'Fitted Spectrum');
+
+    xlabel('Wavelength (nm)');
+    ylabel('PA Signal Intensity');
+    title(sprintf('Linear Unmixing Fit (SO2 = %.2f)', SO2));
+    legend;
+    grid on;
+end
