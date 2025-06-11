@@ -121,12 +121,27 @@ volumeViewer(vol);
 
 ### 5.3 Fluence Sampling
 
-```matlab
-% MATLAB wrapper for MCX or diffusion approximation:
-sample_fluence('phantoms/thick_vessel.raw','Training_data/F_RS.mat','diffusion',100);
+```python
+# SIMPA OpticalModule example:
+import simpa as sp
+
+settings = sp.Settings({...})
+settings.set_volume_creation_settings({...})
+settings.set_optical_settings({
+    sp.Tags.OPTICAL_MODEL_NUMBER_PHOTONS: 1e7,
+    sp.Tags.OPTICAL_MODEL_BINARY_PATH: '/path/to/mcx'
+})
+
+pipeline = [sp.VolumeCreationModule(settings), sp.OpticalModule(settings)]
+sp.simulate(pipeline, settings, sp.CustomDevice())
+
+F_RS = sp.load_data_field(settings[sp.Tags.SIMPA_OUTPUT_FILE_PATH],
+                          sp.Tags.DATA_FIELD_FLUENCE)
+sigma_train = sp.load_data_field(settings[sp.Tags.SIMPA_OUTPUT_FILE_PATH],
+                                 sp.Tags.DATA_FIELD_STANDARD_DEVIATION)
 ```
 
-* Outputs `F_RS` (n_rays × n_wavelengths) and `sigma_train`.
+* Fluence `F_RS` and noise `sigma_train` are stored in the SIMPA output file.
 
 ### 5.4 Building the Cone
 
