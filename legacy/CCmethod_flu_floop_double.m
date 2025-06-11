@@ -2,11 +2,11 @@ clear;
 close all;
 %add the toolbox path
 
-addpath('/home/zz111/Spectral_unmixing/generate_cc/cc_set/')
+addpath('/Users/cassandrayang/Documents/GitHub/Faster_Convex_Cone/Legacy/CC_Set')
 addpath('/Users/cassandrayang/Documents/GitHub/Faster_Convex_Cone/Toolbox')
-load( ['Substance_spectra/spectrum_Hb_Cope.mat' ] );
-load( ['Substance_spectra/spectrum_HbO2_Cope.mat' ] );
-load( ['Substance_spectra/spectrum_H2O.mat' ] );
+load( ['/Users/cassandrayang/Documents/GitHub/Faster_Convex_Cone/Substance_Spectra/spectrum_Hb_Cope.mat' ] );
+load( ['/Users/cassandrayang/Documents/GitHub/Faster_Convex_Cone/Substance_Spectra/spectrum_HbO2_Cope.mat' ] );
+load( ['/Users/cassandrayang/Documents/GitHub/Faster_Convex_Cone/Substance_Spectra/spectrum_H2O.mat' ] );
 
 sele_wavlen = [1:21];
 wavelengths   = 700 : 20 : 900;
