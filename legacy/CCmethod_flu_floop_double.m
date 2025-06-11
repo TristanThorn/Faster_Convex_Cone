@@ -1,9 +1,9 @@
-clear all
+clear;
 close all;
 %add the toolbox path
 
 addpath('/home/zz111/Spectral_unmixing/generate_cc/cc_set/')
-addpath('/home/zz111/Spectral_unmixing/Convex-Cone-Approach-main/Toolbox')
+addpath('/Users/cassandrayang/Documents/GitHub/Faster_Convex_Cone/Toolbox')
 load( ['Substance_spectra/spectrum_Hb_Cope.mat' ] );
 load( ['Substance_spectra/spectrum_HbO2_Cope.mat' ] );
 load( ['Substance_spectra/spectrum_H2O.mat' ] );
@@ -46,8 +46,8 @@ for sBO2 = 0:0.1:1
             .* (150/64500) * log(10);
     SO2_cc_diff(i ,1 ) = convexConeSO2(fluence_spectrum1(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
     SO2_cc_diff(i ,2 ) = convexConeSO2(fluence_spectrum2(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
-     SO2_cc_diff(i ,3 ) = convexConeSO2(fluence_spectrum3(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
-     SO2_cc_diff(i ,4 ) = convexConeSO2(fluence_spectrum4(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
+    SO2_cc_diff(i ,3 ) = convexConeSO2(fluence_spectrum3(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
+    SO2_cc_diff(i ,4 ) = convexConeSO2(fluence_spectrum4(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
     SO2_cc_diff(i ,5 ) = convexConeSO2(fluence_spectrum5(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
     SO2_cc_diff(i ,6 ) = convexConeSO2(fluence_spectrum6(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
     SO2_cc_diff(i ,7 ) = convexConeSO2(fluence_spectrum7(sele_wavlen).*blood_mu_a,spectrum_Hb ,spectrum_HbO2, My_ColorBase_s);
