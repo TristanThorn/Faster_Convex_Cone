@@ -17,7 +17,7 @@ while true
     if(norm([x;y]-coor(:,end))==0)
         break;
     end    
-    coor=[coor [x;y]];
+    coor=[coor [x;y]]; %#ok<AGROW>
     hold on;
     plot(x,y,'r.');
     hold on

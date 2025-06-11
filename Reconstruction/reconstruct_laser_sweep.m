@@ -34,7 +34,7 @@ for idx = 1:length(wavelengths)
 
     % Reconstruct PA image
     img = reconstruct_pa(rfm);
-    caxis([0, 1e3]);
+    clim([0, 1e3]);
 
     % Display and save image
     imshow(img, []);
