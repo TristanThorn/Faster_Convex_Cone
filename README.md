@@ -180,6 +180,13 @@ scripts/run_linear_unmixing_demo
 scripts/run_convex_cone_unmixing_demo
 ```
 
+### Python implementation
+
+The repository now contains an example Python version of the convex-cone
+unmixing algorithm. The script `python/convex_cone_so2.py` demonstrates how to
+compute an sO₂ estimate using NumPy. Environment paths for the external forward
+models are loaded via the SIMPA `PathManager` class.
+
 ---
 
 ## 8. Future Work
