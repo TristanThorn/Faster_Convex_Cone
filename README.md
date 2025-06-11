@@ -29,6 +29,9 @@ addpath(genpath('path/to/cc_unmixing'));
 * `Acquisition/` – raw data I/O
 * `Reconstruction/` – PA/US Fourier-domain recon (`rekon_oa_freqdom.m`, `rekon_us_freqdom1.m`)
 * `Phantoms/` – digital phantom generators
+* `data/` – NIfTI phantoms and processed `.mat` files
+* `scripts/` – runnable examples (`run_linear_unmixing_demo.m`, `run_convex_cone_unmixing_demo.m`)
+* `legacy/` – archived experimental scripts
 * `Analysis/` – spectrum extraction & comparison
 * `Compensation/` – linear unmixing demo (`example_linear_unmixing.m`) and convex-cone unmixing
 
@@ -165,7 +168,21 @@ sO2_CC = GRID_SO2(idx);
 
 ---
 
-## 7. Future Work
+## 7. Example Scripts
+
+Run the demo workflows from the `scripts` folder:
+
+```matlab
+% Linear unmixing example
+scripts/run_linear_unmixing_demo
+
+% Convex-cone constrained unmixing
+scripts/run_convex_cone_unmixing_demo
+```
+
+---
+
+## 8. Future Work
 
 * **In vivo extension**: register PA+US anatomy → patient-specific cones.
 * **GPU acceleration**: MCXLab or GPU-diffusion for faster fluence sampling.

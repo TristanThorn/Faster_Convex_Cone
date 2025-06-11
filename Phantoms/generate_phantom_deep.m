@@ -101,7 +101,7 @@ figure;imshow(squeeze(max(phantom,[],1)),[]);
 % ------------------------
 
 % Save the resized phantom matrix to a .mat file
-niftiwrite(vol, 'digital_VesselDiff_deep_mimicCC_0.2_flip2.nii')
+niftiwrite(vol, fullfile('data','phantoms','digital_VesselDiff_deep_mimicCC_0.2_flip2.nii'))
 % save('digital_vessel_new_mimicCC_0.2.mat', 'phantom');
 
 % close all;
