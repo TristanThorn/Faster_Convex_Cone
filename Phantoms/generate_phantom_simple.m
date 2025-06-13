@@ -1,5 +1,5 @@
 % Create a simplified phantom geometry for quick testing.
-clear all;
+clear;
 close all;
 
 pixel_size = 0.2;

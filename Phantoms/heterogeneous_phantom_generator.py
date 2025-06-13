@@ -104,7 +104,7 @@ def build_simpa_settings(seg, pixel_size_mm, *, wavelengths,
     s.set_optical_settings({
         Tags.OPTICAL_MODEL_NUMBER_PHOTONS    : int(1e6),
         Tags.LASER_PULSE_ENERGY_IN_MILLIJOULE: 10,
-        Tags.OPTICAL_MODEL_BINARY_PATH       : "mcxlab/mcxcl"
+        Tags.OPTICAL_MODEL_BINARY_PATH       : "/Users/cassandrayang/Documents/GitHub/Faster_Convex_Cone/mcxcl"
     })
 
     pipeline = [sp.SegmentationBasedAdapter(s), sp.MCXAdapter(s)]
@@ -170,7 +170,7 @@ def get_mua(h5file, wl_nm):
         return dset[str(wl_nm)][()] # type: ignore
     return dset[()]
 
-def write_nii(arr, vox, fname, dtype: Union[np.dtype, type] = np.float32):
+def write_nii(arr, vox, fname, dtype: Union[np.dtype, type] = np.float16):
     affine = np.diag([vox, vox, vox, 1])
     img    = nifti1.Nifti1Image(arr.astype(dtype), affine)
     loadsave.save(img, fname)
@@ -208,7 +208,7 @@ def main():
     # -- open MCX output -----------------------------------------------------
     h5 = Path(settings[Tags.SIMULATION_PATH], "phantom.hdf5")
     outdir = Path(settings[Tags.SIMULATION_PATH])
-    write_nii(seg, pixel, outdir / "segmentation.nii", dtype=np.uint8)
+    write_nii(seg, pixel, outdir / "segmentation.nii.gz", dtype=np.uint8)
 
     mid_z = seg.shape[2] // 2  # slice index for quick preview
 
@@ -217,8 +217,8 @@ def main():
             flu = get_flu(f, wl)
             mua = get_mua(f, wl)
 
-            write_nii(flu, pixel, outdir / f"fluence_{wl}nm.nii")
-            write_nii(mua, pixel, outdir / f"mu_a_{wl}nm.nii")
+            write_nii(flu, pixel, outdir / f"fluence_{wl}nm.nii.gz")
+            write_nii(mua, pixel, outdir / f"mu_a_{wl}nm.nii.gz")
 
             # -------- quick visual verification --------
             plt.figure(figsize=(8, 2.5))
